@@ -76,6 +76,11 @@ public class RedisProperties {
 	 */
 	private String clientName;
 
+	/**
+	 * Type of client to use. By default, auto-detected according to the classpath.
+	 */
+	private ClientType clientType;
+
 	private Sentinel sentinel;
 
 	private Cluster cluster;
@@ -148,6 +153,14 @@ public class RedisProperties {
 		this.clientName = clientName;
 	}
 
+	public ClientType getClientType() {
+		return this.clientType;
+	}
+
+	public void setClientType(ClientType clientType) {
+		this.clientType = clientType;
+	}
+
 	public Sentinel getSentinel() {
 		return this.sentinel;
 	}
@@ -170,6 +183,23 @@ public class RedisProperties {
 
 	public Lettuce getLettuce() {
 		return this.lettuce;
+	}
+
+	/**
+	 * Type of Redis client to use.
+	 */
+	public enum ClientType {
+
+		/**
+		 * Use the Lettuce redis client.
+		 */
+		LETTUCE,
+
+		/**
+		 * Use the Jedis redis client.
+		 */
+		JEDIS
+
 	}
 
 	/**
@@ -400,6 +430,13 @@ public class RedisProperties {
 			public static class Refresh {
 
 				/**
+				 * Whether to discover and query all cluster nodes for obtaining the
+				 * cluster topology. When set to false, only the initial seed nodes are
+				 * used as sources for topology discovery.
+				 */
+				private boolean dynamicRefreshSources = true;
+
+				/**
 				 * Cluster topology refresh period.
 				 */
 				private Duration period;
@@ -409,6 +446,14 @@ public class RedisProperties {
 				 * triggers should be used.
 				 */
 				private boolean adaptive;
+
+				public boolean isDynamicRefreshSources() {
+					return this.dynamicRefreshSources;
+				}
+
+				public void setDynamicRefreshSources(boolean dynamicRefreshSources) {
+					this.dynamicRefreshSources = dynamicRefreshSources;
+				}
 
 				public Duration getPeriod() {
 					return this.period;

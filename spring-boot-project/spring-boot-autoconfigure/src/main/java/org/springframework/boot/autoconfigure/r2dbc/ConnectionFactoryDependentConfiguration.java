@@ -14,38 +14,31 @@
  * limitations under the License.
  */
 
-package org.springframework.boot.autoconfigure.data.r2dbc;
+package org.springframework.boot.autoconfigure.r2dbc;
 
 import io.r2dbc.spi.ConnectionFactory;
 
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnSingleCandidate;
-import org.springframework.boot.autoconfigure.transaction.TransactionAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
+import org.springframework.r2dbc.core.DatabaseClient;
 
 /**
- * {@link EnableAutoConfiguration Auto-configuration} for {@link R2dbcTransactionManager}.
+ * Configuration of the R2DBC infrastructure based on a {@link ConnectionFactory}.
  *
- * @author Mark Paluch
- * @since 2.3.0
+ * @author Stephane Nicoll
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnClass({ R2dbcTransactionManager.class, ReactiveTransactionManager.class })
+@ConditionalOnClass(DatabaseClient.class)
 @ConditionalOnSingleCandidate(ConnectionFactory.class)
-@AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
-@AutoConfigureBefore(TransactionAutoConfiguration.class)
-public class R2dbcTransactionManagerAutoConfiguration {
+class ConnectionFactoryDependentConfiguration {
 
 	@Bean
-	@ConditionalOnMissingBean(ReactiveTransactionManager.class)
-	public R2dbcTransactionManager connectionFactoryTransactionManager(ConnectionFactory connectionFactory) {
-		return new R2dbcTransactionManager(connectionFactory);
+	@ConditionalOnMissingBean
+	DatabaseClient r2dbcDatabaseClient(ConnectionFactory connectionFactory) {
+		return DatabaseClient.builder().connectionFactory(connectionFactory).build();
 	}
 
 }

@@ -29,6 +29,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.r2dbc.repository.R2dbcRepository;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.data.r2dbc.repository.support.R2dbcRepositoryFactoryBean;
+import org.springframework.r2dbc.core.DatabaseClient;
 
 /**
  * {@link EnableAutoConfiguration Auto-configuration} for Spring Data R2DBC Repositories.

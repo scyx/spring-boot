@@ -216,7 +216,7 @@ bom {
 			]
 		}
 	}
-	library("Couchbase Client", "3.0.5") {
+	library("Couchbase Client", "3.0.7") {
 		group("com.couchbase.client") {
 			modules = [
 				"java-client"
@@ -892,7 +892,7 @@ bom {
 			]
 		}
 	}
-	library("Kafka", "2.5.0") {
+	library("Kafka", "2.6.0") {
 		group("org.apache.kafka") {
 			modules = [
 				"connect-api",
@@ -1317,7 +1317,7 @@ bom {
 			]
 		}
 	}
-	library("Reactor Bom", "2020.0.0-M1") {
+	library("Reactor Bom", "2020.0.0-SNAPSHOT") {
 		group("io.projectreactor") {
 			imports = [
 				"reactor-bom"
@@ -1571,14 +1571,14 @@ bom {
 			]
 		}
 	}
-	library("Spring Integration", "5.4.0-M1") {
+	library("Spring Integration", "5.4.0-SNAPSHOT") {
 		group("org.springframework.integration") {
 			imports = [
 				"spring-integration-bom"
 			]
 		}
 	}
-	library("Spring Kafka", "2.5.3.RELEASE") {
+	library("Spring Kafka", "2.6.0-SNAPSHOT") {
 		group("org.springframework.kafka") {
 			modules = [
 				"spring-kafka",
@@ -1616,7 +1616,7 @@ bom {
 			]
 		}
 	}
-	library("Spring Security", "5.4.0-M1") {
+	library("Spring Security", "5.4.0-RC1") {
 		group("org.springframework.security") {
 			imports = [
 				"spring-security-bom"

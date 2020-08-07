@@ -374,7 +374,7 @@ public class SpringApplication {
 		// 创建并配置环境
 		ConfigurableEnvironment environment = getOrCreateEnvironment();
 		configureEnvironment(environment, applicationArguments.getSourceArgs());
-		//
+		// 配置文件绑定环境
 		ConfigurationPropertySources.attach(environment);
 		// 通知SpringApplicationRunListeners，环境已经准备好
 		listeners.environmentPrepared(environment);
@@ -523,11 +523,14 @@ public class SpringApplication {
 	 * @see #configurePropertySources(ConfigurableEnvironment, String[])
 	 */
 	protected void configureEnvironment(ConfigurableEnvironment environment, String[] args) {
-		if (this.addConversionService) {
+		// 设置environment的conversionService属性
+		if (this.addConversionService) { //true
 			ConversionService conversionService = ApplicationConversionService.getSharedInstance();
 			environment.setConversionService((ConfigurableConversionService) conversionService);
 		}
+		// 配置environment的propertySources属性
 		configurePropertySources(environment, args);
+		// 配置environment的profiles属性
 		configureProfiles(environment, args);
 	}
 
@@ -537,11 +540,13 @@ public class SpringApplication {
 	 * @param environment this application's environment
 	 * @param args arguments passed to the {@code run} method
 	 * @see #configureEnvironment(ConfigurableEnvironment, String[])
+	 * 可以用命令行参数作为propertySources的附加
 	 */
 	protected void configurePropertySources(ConfigurableEnvironment environment, String[] args) {
 		MutablePropertySources sources = environment.getPropertySources();
 		DefaultPropertiesPropertySource.ifNotEmpty(this.defaultProperties, sources::addLast);
 		if (this.addCommandLineProperties && args.length > 0) {
+			// 如果存在就替换
 			String name = CommandLinePropertySource.COMMAND_LINE_PROPERTY_SOURCE_NAME;
 			if (sources.contains(name)) {
 				PropertySource<?> source = sources.get(name);
@@ -552,6 +557,7 @@ public class SpringApplication {
 				sources.replace(name, composite);
 			}
 			else {
+				// 不存在就添加
 				sources.addFirst(new SimpleCommandLinePropertySource(args));
 			}
 		}
@@ -570,6 +576,7 @@ public class SpringApplication {
 	}
 
 	private void configureAdditionalProfiles(ConfigurableEnvironment environment) {
+		// 配置额外的配置文件
 		if (!CollectionUtils.isEmpty(this.additionalProfiles)) {
 			Set<String> profiles = new LinkedHashSet<>(Arrays.asList(environment.getActiveProfiles()));
 			if (!profiles.containsAll(this.additionalProfiles)) {

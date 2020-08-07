@@ -1742,21 +1742,9 @@ The configprop:spring.profiles.active[] property follows the same ordering rules
 This means that you can specify active profiles in `application.properties` and then *replace* them by using the command line switch.
 
 Sometimes, it is useful to have properties that *add* to the active profiles rather than replace them.
-The configprop:spring.profiles.include[] property can be used to unconditionally add active profiles.
-The `SpringApplication` entry point also has a Java API for setting additional profiles (that is, on top of those activated by the configprop:spring.profiles.active[] property).
+The `SpringApplication` entry point has a Java API for setting additional profiles (that is, on top of those activated by the configprop:spring.profiles.active[] property).
 See the `setAdditionalProfiles()` method in {spring-boot-module-api}/SpringApplication.html[SpringApplication].
-
-For example, when an application with the following properties is run by using the switch, `--spring.profiles.active=custom`, the `other` and `extra` profiles are still activated:
-
-[source,yaml,indent=0]
-----
-	---
-	my.property: fromyamlfile
-	spring.profiles.include:
-	  - other
-	  - extra
-----
-
+Profile groups, which are described in the <<boot-features-profiles-groups,next section>> can also be used to add active profiles if a given profile is active.
 
 
 [[boot-features-profiles-groups]]
@@ -4185,7 +4173,8 @@ The following examples shows how to set some PostgreSQL connection options:
 	}
 ----
 
-When a `ConnectionFactory` bean is available, the regular jdbc `DataSource` auto-configuration backs off.
+When a `ConnectionFactory` bean is available, the regular JDBC `DataSource` auto-configuration backs off.
+If you want to retain the JDBC `DataSource` auto-configuration, and are comfortable with the risk of using the blocking JDBC API in a reactive application, add `@Import(DataSourceAutoConfiguration.class)` on a `@Configuration` class in your application to re-enable it.
 
 
 
@@ -4214,7 +4203,7 @@ If you want to make sure that each context has a separate embedded database, you
 
 [[boot-features-r2dbc-using-database-client]]
 ==== Using DatabaseClient
-Spring Data's `DatabaseClient` class is auto-configured, and you can `@Autowire` it directly into your own beans, as shown in the following example:
+A `DatabaseClient` bean is auto-configured, and you can `@Autowire` it directly into your own beans, as shown in the following example:
 
 [source,java,indent=0]
 ----
@@ -6946,6 +6935,34 @@ TIP: Sometimes writing Spring WebFlux tests is not enough; Spring Boot can help 
 
 
 
+[[boot-features-testing-spring-boot-applications-testing-autoconfigured-cassandra-test]]
+==== Auto-configured Data Cassandra Tests
+You can use `@DataCassandraTest` to test Cassandra applications.
+By default, it configures a `CassandraTemplate`, scans for `@Table` classes, and configures Spring Data Cassandra repositories.
+Regular `@Component` beans are not loaded into the `ApplicationContext`.
+(For more about using Cassandra with Spring Boot, see "<<boot-features-cassandra>>", earlier in this chapter.)
+
+TIP: A list of the auto-configuration settings that are enabled by `@DataCassandraTest` can be <<appendix-test-auto-configuration.adoc#test-auto-configuration,found in the appendix>>.
+
+The following example shows a typical setup for using Cassandra tests in Spring Boot:
+
+[source,java,indent=0]
+----
+	import org.springframework.beans.factory.annotation.Autowired;
+	import org.springframework.boot.test.autoconfigure.data.cassandra.DataCassandraTest;
+
+	@DataCassandraTest
+	class ExampleDataCassandraTests {
+
+		@Autowired
+		private YourRepository repository;
+
+		//
+	}
+----
+
+
+
 [[boot-features-testing-spring-boot-applications-testing-autoconfigured-jpa-test]]
 ==== Auto-configured Data JPA Tests
 You can use the `@DataJpaTest` annotation to test JPA applications.
@@ -7308,7 +7325,7 @@ It can also be used to configure the host, scheme, and port that appears in any 
 
 [[boot-features-testing-spring-boot-applications-testing-autoconfigured-rest-docs-mock-mvc]]
 ===== Auto-configured Spring REST Docs Tests with Mock MVC
-`@AutoConfigureRestDocs` customizes the `MockMvc` bean to use Spring REST Docs.
+`@AutoConfigureRestDocs` customizes the `MockMvc` bean to use Spring REST Docs when testing Servlet-based web applications.
 You can inject it by using `@Autowired` and use it in your tests as you normally would when using Mock MVC and Spring REST Docs, as shown in the following example:
 
 [source,java,indent=0]
@@ -7378,7 +7395,7 @@ The following example shows a `RestDocumentationResultHandler` being defined:
 
 [[boot-features-testing-spring-boot-applications-testing-autoconfigured-rest-docs-web-test-client]]
 ===== Auto-configured Spring REST Docs Tests with WebTestClient
-`@AutoConfigureRestDocs` can also be used with `WebTestClient`.
+`@AutoConfigureRestDocs` can also be used with `WebTestClient` when testing reactive web applications.
 You can inject it by using `@Autowired` and use it in your tests as you normally would when using `@WebFluxTest` and Spring REST Docs, as shown in the following example:
 
 [source,java,indent=0]

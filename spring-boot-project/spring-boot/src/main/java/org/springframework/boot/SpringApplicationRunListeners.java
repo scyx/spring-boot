@@ -48,6 +48,10 @@ class SpringApplicationRunListeners {
 		}
 	}
 
+	/**
+	 * 通知SpringApplicationRunListener，环境已经准备完成
+	 * @param environment
+	 */
 	void environmentPrepared(ConfigurableEnvironment environment) {
 		for (SpringApplicationRunListener listener : this.listeners) {
 			listener.environmentPrepared(environment);
