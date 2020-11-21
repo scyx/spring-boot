@@ -25,8 +25,4 @@ allprojects {
 			maven { url "https://repo.spring.io/snapshot" }
 		}
 	}
-
-	configurations.all {
-		resolutionStrategy.cacheChangingModulesFor 0, "minutes"
-	}
 }

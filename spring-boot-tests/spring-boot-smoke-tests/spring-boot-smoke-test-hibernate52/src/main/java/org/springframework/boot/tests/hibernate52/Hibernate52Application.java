@@ -26,4 +26,5 @@ public class Hibernate52Application  {
 		SpringApplication.run(Hibernate52Application.class, args);
 	}
 
+
 }
